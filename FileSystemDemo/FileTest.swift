@@ -23,7 +23,8 @@ class FileTest {
     func getBundleResources() {
         print("get bundle resources")
 
-        if let imagePath = Bundle.main.path(forResource: "swift-og", ofType: "png"),             let attrs = try? FileManager.default.attributesOfItem(atPath: imagePath) {
+        if let imagePath = Bundle.main.path(forResource: "swift-og", ofType: "png"),
+            let attrs = try? FileManager.default.attributesOfItem(atPath: imagePath) {
             print("image path: \(imagePath)")
             print("attributes: \(attrs[FileAttributeKey.size] ?? "unknown")")
         }
