@@ -23,14 +23,21 @@ class FileTest {
     func getBundleResources() {
         print("get bundle resources")
 
+        // get the path to a resource file in bundle
         if let imagePath = Bundle.main.path(forResource: "swift-og", ofType: "png"),
             let attrs = try? FileManager.default.attributesOfItem(atPath: imagePath) {
             print("image path: \(imagePath)")
             print("attributes: \(attrs[FileAttributeKey.size] ?? "unknown")")
         }
 
-        print("Bundle resource path: ", Bundle.main.resourcePath ?? "")
+        if let imageURL = Bundle.main.url(forResource: "swift-og", withExtension: "png") {
+            print("image url ", imageURL)
+            let data = try? Data(contentsOf: imageURL)
+            print("image data size ", data?.count ?? 0)
+        }
 
+        // get the bundle resource location
+        // and display all its content
         if let resourceURL = Bundle.main.resourceURL,
             let contents = try? FileManager.default.contentsOfDirectory(at: resourceURL, includingPropertiesForKeys: nil, options: []) {
             print("resource path: \(resourceURL)")
@@ -40,9 +47,10 @@ class FileTest {
             }
         }
 
-
+        // the project may come with multiple bundles
         print("bundle count: ", Bundle.allBundles.count)
 
+        // the project usually is shipped with a lot of frameworks
         print("frameworks count \(Bundle.allFrameworks.count)")
     }
 
@@ -102,26 +110,24 @@ class FileTest {
     }
 
     func createDocFile(fileName: String, content: String) {
+        // get the document directory url
         guard let docDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
 
+        // choose the location of the file to be withinthe document directory
         let fileURL = docDir.appendingPathComponent(fileName)
         print("file url: ", fileURL)
 
-        if FileManager.default.fileExists(atPath: fileURL.absoluteString) {
-            print("file exists")
-            return
-        }
-
         do {
+            // creating or appending to a file by writing to the file url
             print("writing data to file...")
             try content.write(to: fileURL, atomically: true, encoding: .utf8)
 
+            // instantiate the contents of a file into an appropriate type
             let newString = try String(contentsOf: fileURL)
             print("new string: ", newString)
         } catch {
             print("data writing error \(error)")
         }
-
     }
 
     func createDocFileWithPaths(fileName: String, content: String) {
